@@ -4,10 +4,12 @@ import { ref, reactive } from 'vue';
 import { useMessageModalStore } from './stores/messageModal';
 import { useAuthenticationStore } from './stores/authentication';
 import { postFeed } from './services/feedService';
+import { useFeedStore } from './stores/feed';
 
 const modalCloseButton = ref(null);
 const messageModalStore = useMessageModalStore();
 const authenticationStore = useAuthenticationStore();
+const feedStore = useFeedStore();
 
 const state = reactive({
   feed: {
@@ -56,7 +58,7 @@ const saveFeed = async () => {
 
     const res = await postFeed(formData);
     if(res.status === 200) {
-        const result = res.data.result;
+        const result = res.data.resultData;
 
         const item = {
             ...params,
@@ -73,9 +75,9 @@ const saveFeed = async () => {
                 commentList: []
             }  
         };
+        console.log('item: ', item);
 
-        //state.list.unshift(item);
-        // feedStore.addFeedUnshift(item)
+        feedStore.addFeedUnshift(item)
         initInputs();
         modalCloseButton.value.click(); //모달창 닫기
     }

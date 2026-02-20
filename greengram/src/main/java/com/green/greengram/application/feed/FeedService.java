@@ -1,6 +1,8 @@
 package com.green.greengram.application.feed;
 
 import com.green.greengram.application.feed.model.FeedPostReq;
+import com.green.greengram.application.feed.model.FeedPostRes;
+import com.green.greengram.configuration.util.ImgUploadManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,13 +15,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FeedService {
     private final FeedMapper feedMapper;
+    private final ImgUploadManager imgUploadManager;
 
-    public void postFeed(FeedPostReq req, List<MultipartFile> pics){
+    public FeedPostRes postFeed(FeedPostReq req, List<MultipartFile> pics){
         feedMapper.save(req);
 
-        //이후에 방금 insert한 feed테이블의 id값이 필요해요.
+        //이후에 방금 insert한 feed테이블의 id값이 필요.
         long feedId = req.getFeedId();
         log.info("feedId:{}", feedId);
+
+        // saveFeedPics 메소드 호출.
+        List<String> picSavedNames = imgUploadManager.saveFeedPics( feedId, pics );
+        feedMapper.savePics(feedId, picSavedNames);
+
+        return new FeedPostRes(feedId,picSavedNames);
     }
 
 }

@@ -7,5 +7,15 @@
         contents = #{contents},
         user_id = #{signedUserId}
     </insert>
-
+    <insert id="savePics">
+        INSERT INTO feed_pic
+        ( feed_id, pic )
+        VALUES
+<!--        <foreach collection="picSavedNames" item="item" open="(" close=")" separator="), (">-->
+<!--            #{feedId}, #{item}-->
+<!--        </foreach>-->
+        <foreach collection="picSavedNames" item="item" separator=",">
+            ( #{feedId}, #{item} )
+        </foreach>
+    </insert>
 </mapper>
