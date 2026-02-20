@@ -33,7 +33,7 @@ const getData = async () => {
     state.isLoading = true;
     const params = {
         page: feedStore.page,
-        row_per_page: feedStore.rowPerPage
+        size: feedStore.rowPerPage
     }
     if (feedStore.profileUserId) {
         params.profile_user_id = feedStore.profileUserId
@@ -46,7 +46,7 @@ const getData = async () => {
         const res = await getFeedList(params);
         if (res.status === 200) {
             feedStore.setPage(feedStore.page + 1);
-            const result = res.data.result;
+            const result = res.data.resultData;
             if (result && result.length > 0) {
                 feedStore.addFeedList(result);
             }
