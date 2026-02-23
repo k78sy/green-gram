@@ -12,7 +12,7 @@ import java.util.List;
 public interface FeedMapper {
     int save(FeedPostReq req);
     List<FeedGetRes> findAll(FeedGetReq req);
-
+    List<String> findPicsById(long feedId);
 
     int savePics(@Param("feedId") long feedId,
                  @Param("picSavedNames") List<String> picSavedNames);

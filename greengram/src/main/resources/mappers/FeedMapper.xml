@@ -15,8 +15,17 @@
         FROM feed f
         JOIN user u
         ON f.user_id = u.id
+        <if test=" profileUserId != null and profileUserId != '' ">
+            WHERE f.user_id = #{profileUserId}
+        </if>
         ORDER BY f.id DESC
-        LIMIT #{startIdx}, #{size}
+        LIMIT #{startIdx} , #{size}
+    </select>
+
+    <select id="findPicsById">
+        SELECT pic
+        FROM feed_pic
+        WHERE feed_id = #{feedId}
     </select>
 
     <insert id="savePics">
