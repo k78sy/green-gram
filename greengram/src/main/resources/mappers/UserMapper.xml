@@ -3,16 +3,24 @@
 <mapper namespace="com.green.greengram.application.user.UserMapper">
     <insert id="signUp" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user
-           SET uid = #{uid}
-             , upw = #{upw}
-             , nm = #{nm}
-             , pic = #{pic}
+        SET uid = #{uid}
+        , upw = #{upw}
+        , nm = #{nm}
+        , pic = #{pic}
     </insert>
 
     <select id="findByUid">
         SELECT id, uid, upw, nm, pic, created_at
-          FROM user
-         WHERE uid = #{uid}
+        FROM user
+        WHERE uid = #{uid}
     </select>
 
+    <select id="findProfileUser">
+        SELECT u.id, u.pic, u.created_at, u.uid, u.nm
+        , count(DISTINCT f.id) AS feedCount
+        FROM user u
+        LEFT JOIN feed f
+        ON f.user_id = u.id
+        WHERE u.id = #{profileUserId}
+    </select>
 </mapper>

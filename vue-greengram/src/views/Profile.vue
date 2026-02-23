@@ -38,7 +38,7 @@ const init = (userId) => {
         followingCount: 0,
         followState: 0,
     };
-    state.isMyProfile = userId === authenticationStore.state.signedUser.userId;
+    state.isMyProfile = userId == authenticationStore.state.signedUser.userId;
 };
 
 init(route.params.userId);
@@ -71,7 +71,7 @@ const getUserData = async () => {
     const res = await getUserProfile(params);
 
     if (res.status === 200) {
-        const result = res.data.result;
+        const result = res.data.resultData;
         state.userProfile = result;
     }
 };
@@ -196,9 +196,7 @@ onBeforeRouteUpdate((to, from) => {
             <div
             className="d-inline-flex item_container width-50"
             v-if="state.isMyProfile && state.userProfile.pic">
-            <i
-                className="fa fa-minus-square color-red pointer"
-                @click="removeUserPic" />
+            <font-awesome-icon icon="fa fa-minus-square" class="color-red pointer" @click="removeUserPic" />
             </div>
             <input
             hidden

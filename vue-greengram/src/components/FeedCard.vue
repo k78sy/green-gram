@@ -77,16 +77,14 @@ const toggleLike = async () => {
           </router-link>
         </div>
         <div>{{ props.item.location }}</div>
-      </div>
+      </div>            
       <div
         v-if="
           props.ynDel &&
-          props.item.writerUserId === authenticationStore.state.signedUser.userId
+          props.item.writerUserId == authenticationStore.state.signedUser.userId
         ">
         <div className="d-flex flex-column justify-content-center">
-          <i
-            className="fa fa-trash pointer color-red"
-            @click="$emit('onDeleteFeed')"></i>
+          <font-awesome-icon icon="fa fa-trash" class="pointer color-red" @click="$emit('onDeleteFeed')" />
         </div>
       </div>
     </div>

@@ -1,9 +1,6 @@
 package com.green.greengram.application.user;
 
-import com.green.greengram.application.user.model.UserGetOneRes;
-import com.green.greengram.application.user.model.UserSignInReq;
-import com.green.greengram.application.user.model.UserSignInRes;
-import com.green.greengram.application.user.model.UserSignUpReq;
+import com.green.greengram.application.user.model.*;
 import com.green.greengram.configuration.util.MyFileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,9 +60,13 @@ public class UserService {
 //        String refreshToken = jwtTokenProvider.generateRefreshToken(jwtUser);
 
         return UserSignInRes.builder()
-                            .signedUserId( res.getId() )
-                            .nm( res.getNm() )
-                            .pic( res.getPic() )
-                            .build();
+                .signedUserId( res.getId() )
+                .nm( res.getNm() )
+                .pic( res.getPic() )
+                .build();
+    }
+
+    public UserProfileGetRes getProfileUser (UserProfileGetReq req) {
+        return userMapper.findProfileUser(req);
     }
 }
