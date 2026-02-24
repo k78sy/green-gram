@@ -8,29 +8,32 @@
         user_id = #{signedUserId}
     </insert>
 
+
     <select id="findAll">
-        SELECT f.id , f.contents, f.location, f.created_at,
-                u.id AS writerUserId, u.uid AS writerUid,
-                u.nm AS writerNickName, u.pic AS writerPic
-                , fl.feed_id IS NOT NULL AS IsLike
-                , IFNULL(fic.likeCount, 0) AS likeCount
-         FROM feed f
-         JOIN user u
-          ON f.user_id = u.id
-        <if test=" profileUserId != null and profileUserId != '' ">
+        SELECT f.id, f.contents, f.location, f.created_at
+        , u.id AS writerUserId
+        , u.uid AS writerUid
+        , u.nm AS writerNickName
+        , u.pic AS writerPic
+        , fl.feed_id IS NOT NULL AS isLike
+        , IFNULL(flc.likeCount, 0) AS likeCount
+        FROM feed f
+        JOIN user u
+        ON u.id = f.user_id
+        LEFT JOIN feed_like AS fl
+        ON fl.feed_id = f.id
+        AND fl.user_id = #{signedUserId}
+        LEFT JOIN (
+        SELECT feed_id, COUNT(feed_id) AS likeCount
+        FROM feed_like
+        GROUP BY feed_id
+        ) AS flc
+        ON flc.feed_id = f.id
+        <if test=" profileUserId != null and profileUserId > 0 ">
             WHERE f.user_id = #{profileUserId}
         </if>
-         LEFT JOIN feed_like fl
-           ON f.id = fl.feed_id
-          AND fl.user_id = #{signedUserId}
-         LEFT JOIN (
-            SELECT feed_id, COUNT(feed_id) AS likeCount
-            FROM feed_like
-            GROUP BY feed_id
-        )  AS fic
-           ON fic.feed_id = f.id
         ORDER BY f.id DESC
-        LIMIT #{startIdx} , #{size}
+        LIMIT #{startIdx}, #{size}
     </select>
 
     <select id="findPicsById">
