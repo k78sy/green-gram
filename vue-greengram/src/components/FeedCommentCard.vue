@@ -20,7 +20,7 @@ const props = defineProps({
           :userId="props.item.writerUserId" />
       </router-link>
       <template v-if="authenticationStore.state.signedUser.userId === props.item.writerUserId">
-        <i class="fa fa-trash pointer" @click="$emit('onDeleteComment')"></i>
+        <font-awesome-icon icon="fa fa-trash" class="pointer" @click="$emit('onDeleteComment')"/>
       </template>
     </div>
     <router-link :to="`/profile/${props.item.writerUserId}`">
