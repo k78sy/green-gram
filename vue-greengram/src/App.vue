@@ -64,7 +64,7 @@ const saveFeed = async () => {
             ...params,
             feedId: result.feedId,
             pics: result.pics,
-            writerId: authenticationStore.state.signedUser.userId,
+            writerUserId: authenticationStore.state.signedUser.userId,
             writerNickName: authenticationStore.state.signedUser.nickName,
             writerPic: authenticationStore.state.signedUser.pic,
             createdAt: getCurrentTimestamp(),
