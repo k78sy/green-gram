@@ -41,7 +41,7 @@ const onPostComment = async () => {
 
   const res = await postComment(data);
   if (res.status === 200) {
-    const result = res.data.result;
+    const result = res.data.resultData;
 
     const commentItem = {
       feedCommentId: result,
