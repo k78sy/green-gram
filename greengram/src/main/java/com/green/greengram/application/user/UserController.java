@@ -54,10 +54,18 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResultResponse<?> getProfileUser(@AuthenticationPrincipal UserPrincipal userPrincipal
-            , @RequestParam("profile_user_id") long profileUserId) {
+            , @RequestParam long profileUserId) {
         UserProfileGetReq req = new UserProfileGetReq( profileUserId, userPrincipal.getSignedUserId() );
-        log.info("UserPofilereq: {}", req);
+        log.info("req: {}", req);
         UserProfileGetRes res = userService.getProfileUser(req);
         return new ResultResponse<>("프로파일 유저 정보", res);
     }
+
+    @PatchMapping("/profile/pic")
+    public ResultResponse<?> patchProfileUserPic(@AuthenticationPrincipal UserPrincipal userPrincipal
+            , @RequestPart MultipartFile pic) {
+        String savedFileName = userService.patchProfilePic(userPrincipal.getSignedUserId(), pic);
+        return new ResultResponse<>("프로파일 유저 사진 수정", savedFileName);
+    }
+
 }

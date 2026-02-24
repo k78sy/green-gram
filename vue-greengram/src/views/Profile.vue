@@ -102,7 +102,7 @@ const handlePicChanged = async (e) => {
 
     const res = await patchUserProfilePic(formData);
     if (res.status === 200) {
-        const changedPic = res.data.result;
+        const changedPic = res.data.resultData;
         state.userProfile.pic = changedPic;
 
         authenticationStore.setSigndUserPic(changedPic);

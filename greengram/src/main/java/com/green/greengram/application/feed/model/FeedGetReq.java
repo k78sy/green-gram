@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.web.bind.annotation.BindParam;
 
-//page=1&size=20
 @Getter
 @ToString
 public class FeedGetReq {
@@ -13,11 +12,10 @@ public class FeedGetReq {
     private Long profileUserId;
     private int startIdx;
 
-    public FeedGetReq(int page, int size,@BindParam("profile_user_id") Long profileUserId) {
+    public FeedGetReq(int page, int size, Long profileUserId) {
         this.page = page;
         this.size = size;
         this.profileUserId = profileUserId;
-
         this.startIdx = (page - 1) * size;
     }
 }
