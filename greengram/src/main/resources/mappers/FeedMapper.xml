@@ -3,40 +3,51 @@
 <mapper namespace="com.green.greengram.application.feed.FeedMapper">
     <insert id="save" useGeneratedKeys="true" keyProperty="feedId">
         INSERT INTO feed
-        SET location = #{location}
-        , contents = #{contents}
-        , user_id = #{signedUserId}
+        SET location = #{location},
+        contents = #{contents},
+        user_id = #{signedUserId}
     </insert>
 
     <select id="findAll">
-        SELECT f.id, f.contents, f.location, f.created_at
-        , u.id AS writerUserId
-        , u.uid AS writerUid
-        , u.nm AS writerNickName
-        , u.pic AS writerPic
-        FROM feed f
-        JOIN user u
-        ON u.id = f.user_id
-        <if test=" profileUserId != null and profileUserId > 0 ">
+        SELECT f.id , f.contents, f.location, f.created_at,
+                u.id AS writerUserId, u.uid AS writerUid,
+                u.nm AS writerNickName, u.pic AS writerPic
+                , fl.feed_id IS NOT NULL AS IsLike
+                , IFNULL(fic.likeCount, 0) AS likeCount
+         FROM feed f
+         JOIN user u
+          ON f.user_id = u.id
+        <if test=" profileUserId != null and profileUserId != '' ">
             WHERE f.user_id = #{profileUserId}
         </if>
+         LEFT JOIN feed_like fl
+           ON f.id = fl.feed_id
+          AND fl.user_id = #{signedUserId}
+         LEFT JOIN (
+            SELECT feed_id, COUNT(feed_id) AS likeCount
+            FROM feed_like
+            GROUP BY feed_id
+        )  AS fic
+           ON fic.feed_id = f.id
         ORDER BY f.id DESC
-        LIMIT #{startIdx}, #{size}
+        LIMIT #{startIdx} , #{size}
     </select>
-
-
-    <insert id="savePics">
-        INSERT INTO feed_pic
-        ( feed_id, pic )
-        VALUES
-        <foreach collection="picSavedNames" item="v" separator=",">
-            ( #{feedId}, #{v} )
-        </foreach>
-    </insert>
 
     <select id="findPicsById">
         SELECT pic
         FROM feed_pic
         WHERE feed_id = #{feedId}
     </select>
+
+    <insert id="savePics">
+        INSERT INTO feed_pic
+        ( feed_id, pic )
+        VALUES
+<!--        <foreach collection="picSavedNames" item="item" open="(" close=")" separator="), (">-->
+<!--            #{feedId}, #{item}-->
+<!--        </foreach>-->
+        <foreach collection="picSavedNames" item="item" separator=",">
+            ( #{feedId}, #{item} )
+        </foreach>
+    </insert>
 </mapper>

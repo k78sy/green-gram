@@ -10,6 +10,7 @@ public class FeedGetReq {
     private int page;
     private int size;
     private Long profileUserId;
+    private long signedUserId;
     private int startIdx;
 
     public FeedGetReq(int page, int size, Long profileUserId) {
@@ -17,5 +18,9 @@ public class FeedGetReq {
         this.size = size;
         this.profileUserId = profileUserId;
         this.startIdx = (page - 1) * size;
+    }
+
+    public void setSignedUserId(long signedUserId) {
+        this.signedUserId = signedUserId;
     }
 }
