@@ -5,6 +5,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface FeedLikeMapper {
-    int deleteFeedLike(FeedLikeReq req);
-    int insertFeedLike(FeedLikeReq req);
+    int delete(FeedLikeReq req);
+    int save(FeedLikeReq req);
 }

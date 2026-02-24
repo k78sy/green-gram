@@ -18,14 +18,14 @@ public class FeedLikeService {
     // 2경우. select. row가 없다? insert 처리하고 return true
     public boolean toggleFeedLike(FeedLikeReq req){
         // delete를 하고
-        int result = feedLikeMapper.deleteFeedLike(req);
+        int delAffectedRows = feedLikeMapper.delete(req);
 
         // if = 1이라면 return false
-        if(result == 1){
+        if(delAffectedRows == 1){
             return false;
         }
         // if = 0이라면 insert 하고 return true
-        result = feedLikeMapper.insertFeedLike(req);
+        feedLikeMapper.save(req);
         return true;
     }
 }

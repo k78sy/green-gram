@@ -45,7 +45,7 @@ const toggleLike = async () => {
   const data = { feedId: props.item.feedId };
   const res = await toggleFeedLike(data);
   if (res.status === 200) {
-    state.isLike = res.data.result;
+    state.isLike = res.data.resultData;
     state.likeCount = state.isLike ? state.likeCount + 1 : state.likeCount - 1;
   }
 };

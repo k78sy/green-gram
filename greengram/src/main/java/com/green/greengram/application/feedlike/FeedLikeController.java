@@ -24,6 +24,6 @@ public class FeedLikeController {
         req.setSignedUserId(userPrincipal.getSignedUserId());
         log.info("req: {}", req);
         boolean result = feedLikeService.toggleFeedLike( req );
-        return null;
+        return new ResultResponse<>(result ? "좋아요 처리" : "좋아요 취소",  result);
     }
 }
