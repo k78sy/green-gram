@@ -26,15 +26,18 @@
             , count(DISTINCT f.id) AS feedCount
             , COUNT(DISTINCT ff.from_user_id, ff.to_user_id) AS followingCount
             , COUNT(DISTINCT tf.from_user_id, tf.to_user_id) AS followerCount
-            , MAX( DISTINCT if(tf.from_user_id = #{signUserId}, 1, 0) )
-            + MAX( DISTINCT if(tf.to_user_id = #{signUserId}, 2, 0) ) AS followState
+            , MAX( DISTINCT if(tf.from_user_id = #{signUserId}, 1, 0) )<!-- 로그인 유저가 팔로잉인지 -->
+            + MAX( DISTINCT if(tf.to_user_id = #{signUserId}, 2, 0) )<!-- 로그인 유저가 팔로워인지 --> AS followState
           FROM user u
           LEFT JOIN feed f
             ON f.user_id = u.id
-          LEFT JOIN user_follow ff
+
+          LEFT JOIN user_follow ff <!-- #{profileUserId}의 팔로우수 세기 -->
             ON ff.from_user_id = u.id
-          LEFT JOIN user_follow tf
+
+          LEFT JOIN user_follow tf <!-- #{profileUserId} 팔로워수 세기 -->
             ON tf.to_user_id = u.id
+
          WHERE u.id = #{profileUserId}
     </select>
 

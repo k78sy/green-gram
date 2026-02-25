@@ -7,4 +7,10 @@
         from_user_id = #{fromUserId},
         to_user_id= #{toUserId}
     </insert>
+    <delete id="unfollow">
+        DELETE
+        from user_follow
+        WHERE from_user_id = #{fromUserId}
+        AND to_user_id = #{toUserId};
+    </delete>
 </mapper>

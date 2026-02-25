@@ -14,4 +14,7 @@ public class UserFollowService {
     public int postUserFollow( UserFollowReq req ){
         return userFollowMapper.follow( req ) ;
     }
+    public int deleteUserFollow( UserFollowReq req ){
+        return userFollowMapper.unfollow( req ) ;
+    }
 }
