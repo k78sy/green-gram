@@ -67,6 +67,14 @@ public class UserService {
     }
 
     public UserProfileGetRes getProfileUser (UserProfileGetReq req) {
+        /* followState 0, 1, 2, 3
+        profile 주인, 로그인한 사용자 관계
+        0: 서로 팔로우 안한 상태
+        1: 로그인한 사용자가 profile 주인을 팔로우 한 상태
+        2: profile 주인이 로그인한 사용자를 팔로우 한 상태
+        3: 서로 팔로우 한 상태
+        * */
+
         return userMapper.findProfileUser(req);
     }
 
