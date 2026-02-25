@@ -1,5 +1,6 @@
 package com.green.greengram.application.feedcomment;
 
+import com.green.greengram.application.feed.model.FeedGetReq;
 import com.green.greengram.application.feedcomment.model.FeedCommentPostReq;
 import com.green.greengram.configuration.model.ResultResponse;
 import com.green.greengram.configuration.model.UserPrincipal;
@@ -22,5 +23,11 @@ public class FeedCommentController {
         log.info("req: {}", req);
         long feedCommentId = feedCommentService.postFeedComment( req );
         return new ResultResponse<>("댓글", feedCommentId);
+    }
+
+    @GetMapping
+    public ResultResponse<?> getFeedCommentList(@ModelAttribute FeedGetReq req ) {
+
+        return new ResultResponse<>("댓글 목록", null);
     }
 }

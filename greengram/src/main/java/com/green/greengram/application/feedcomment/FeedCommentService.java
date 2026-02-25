@@ -1,10 +1,13 @@
 package com.green.greengram.application.feedcomment;
 
-import com.green.greengram.application.feed.FeedMapper;
+import com.green.greengram.application.feedcomment.model.FeedCommentGetReq;
+import com.green.greengram.application.feedcomment.model.FeedCommentGetRes;
 import com.green.greengram.application.feedcomment.model.FeedCommentPostReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -19,5 +22,11 @@ public class FeedCommentService {
         log.info("feedCommentId:{}", feedCommentId);
 
         return feedCommentId;
+    }
+
+    public List<FeedCommentGetRes> getFeedCommentList(FeedCommentGetReq req){
+        List<FeedCommentGetRes> commentList = feedCommentMapper.findAll(req);
+
+        return commentList;
     }
 }

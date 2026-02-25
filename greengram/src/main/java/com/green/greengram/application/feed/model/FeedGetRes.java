@@ -24,5 +24,6 @@ public class FeedGetRes {
     private int likeCount; // 해당 피드에 좋아요한 수
     private List<String> pics = new ArrayList<>();
 
-    private FeedCommentGetRes comments;
+    private int commentCount; // 피드에 달린 댓글 수
+//    private FeedCommentGetRes comments;
 }
