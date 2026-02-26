@@ -43,6 +43,7 @@ a { text-decoration: none; color: black; }
 .h-full { height: 100vh; }
 .loading { align-items: center; display:flex; height: 100%; justify-content: center; width: 100%; position: fixed; z-index: 100; left: 0; top: 0;}
 .loading img { width: 80px; }
+.h100p { height: 100%; }
 
 .my_input { border: 0; }
 .my_input:focus { outline: none; }

@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import { ref, reactive } from 'vue';
 import { getDateTimeInfo } from '@/utils/feedUtils';
 import { toggleFeedLike } from '@/services/feedLikeService';
+import { useCommentModalStore } from '@/stores/commentModal';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -14,6 +15,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
 const baseUrl = ref(import.meta.env.VITE_BASE_URL);
+const commentModalStore = useCommentModalStore();
 
 const authenticationStore = useAuthenticationStore();
 
@@ -38,7 +40,7 @@ const state = reactive({
   modules: [Navigation, Pagination, Scrollbar, A11y],
   isLike: props.item.isLike,
   pagination: props.item.pics.length <= 5 ? { clickable: true } : null,
-  likeCount: props.item.likeCount,
+  likeCount: props.item.likeCount
 });
 
 const toggleLike = async () => {
@@ -49,6 +51,10 @@ const toggleLike = async () => {
     state.likeCount = state.isLike ? state.likeCount + 1 : state.likeCount - 1;
   }
 };
+
+const showCommentModel = () => {
+  commentModalStore.setFeedId(props.item.feedId);
+}
 </script>
 
 <template>
@@ -56,54 +62,74 @@ const toggleLike = async () => {
     <div class="d-flex flex-row ps-3 pe-3">
       <div class="d-flex flex-column justify-content-center">
         <router-link :to="`/profile/${props.item.writerUserId}`">
-          <profile-img :userId="props.item.writerUserId" :pic="props.item.writerPic" :size="30"
+          <profile-img
+            :userId="props.item.writerUserId"
+            :pic="props.item.writerPic"
+            :size="30"
             :clsValue="'pointer profile'" />
         </router-link>
       </div>
       <div class="p-3 flex-grow-1">
         <div>
           <router-link :to="`/profile/${props.item.writerUserId}`">
-            <span class="pointer">{{
-              props.item.writerNickName
-                ? props.item.writerNickName
-                : props.item.writerUid
-            }}
-              - {{ getDateTimeInfo(props.item.createdAt) }}</span>
+            <span class="pointer"
+              >{{
+                props.item.writerNickName
+                  ? props.item.writerNickName
+                  : props.item.writerUid
+              }}
+              - {{ getDateTimeInfo(props.item.createdAt) }}</span
+            >
           </router-link>
         </div>
         <div>{{ props.item.location }}</div>
-      </div>
-      <div v-if="
-        props.ynDel &&
-        props.item.writerUserId == authenticationStore.state.signedUser.userId
-      ">
-        <div className="d-flex flex-column justify-content-center">
+      </div>            
+      <div
+        v-if="
+          props.ynDel &&
+          props.item.writerUserId === authenticationStore.state.signedUser.userId
+        ">
+        <div class="d-flex flex-column justify-content-center">
           <font-awesome-icon icon="fa fa-trash" class="pointer color-red" @click="$emit('onDeleteFeed')" />
         </div>
       </div>
     </div>
 
-    <swiper navigation :modules="state.modules" :pagination="{ clickable: true, dynamicBullets: true }"
-      :slides-per-view="1" :space-between="50">
-      <swiper-slide v-for="(item, idx) in props.item.pics" :virtualIndex="idx" :key="idx">
-        <img :src="`/pic/feed/${props.item.feedId}/${item}`" :alt="`이미지`" :aria-label="`이미지`" class="w614" />
+    <swiper
+      navigation
+      :modules="state.modules"
+      :pagination="{ clickable: true, dynamicBullets: true }"
+      :slides-per-view="1"
+      :space-between="50">
+      <swiper-slide
+        v-for="(item, idx) in props.item.pics"
+        :virtualIndex="idx"
+        :key="idx">
+        <img
+          :src="`/pic/feed/${props.item.feedId}/${item}`"
+          :alt="`이미지`"
+          :aria-label="`이미지`"
+          class="w614" />
       </swiper-slide>
     </swiper>
     <div class="favCont p-2 d-flex flex-row">
-      <div>
-        <font-awesome-icon :icon="`${state.isLike ? 'fas' : 'far'} fa-heart`" class="pointer rem1_2  color-red"
-          @click="toggleLike" />
+      <div style="margin-right: 20px;">
+        <font-awesome-icon :icon="`${state.isLike ? 'fas' : 'far'} fa-heart`" 
+        class="pointer rem1_2 me-3 color-red" @click="toggleLike" />
         <span>{{ state.likeCount }}</span>
       </div>
+
       <div>
-        <font-awesome-icon icon="fa-regular fa-comment" class="pointer rem1_2 ms-3" />
+        <font-awesome-icon icon="fa-regular fa-comment" class="pointer rem1_2 me-3" @click="showCommentModel"/>
         <span>{{ props.item.commentCount }}</span>
       </div>
     </div>
     <div class="itemCtnt p-2" v-if="props.item.contents">
       {{ props.item.contents }}
     </div>
-    <!-- <feed-comment-container :feed-id="props.item.feedId" :comments="props.item.comments" /> -->
+    <!-- <feed-comment-container
+      :feed-id="props.item.feedId"
+      :comments="props.item.comments" /> -->
   </div>
 </template>
 
@@ -112,7 +138,6 @@ const toggleLike = async () => {
   border: 1px solid #9f9e9e;
   width: 600px;
 }
-
 .w614 {
   width: 614px;
 }

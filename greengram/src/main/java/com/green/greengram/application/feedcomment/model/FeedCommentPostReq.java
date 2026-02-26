@@ -8,8 +8,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class FeedCommentPostReq {
+    private long id;
     private long signedUserId;
     private long feedId;
     private String comment;
-    private long feedCommentId;
 }

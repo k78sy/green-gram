@@ -1,23 +1,27 @@
 <script setup>
 import HeaderComponent from './components/HeaderComponent.vue';
-import { ref, reactive } from 'vue';
+import loadingImg from '@/assets/loading.gif';
+import { ref, reactive, watch } from 'vue';
 import { useMessageModalStore } from './stores/messageModal';
 import { useAuthenticationStore } from './stores/authentication';
-import { postFeed } from './services/feedService';
 import { useFeedStore } from './stores/feed';
+import { postFeed } from './services/feedService';
+import { useCommentModalStore } from './stores/commentModal';
+import FeedCommentCard from './components/FeedCommentCard.vue';
 
 const modalCloseButton = ref(null);
 const messageModalStore = useMessageModalStore();
 const authenticationStore = useAuthenticationStore();
 const feedStore = useFeedStore();
+const commentModalStore = useCommentModalStore();
 
 const state = reactive({
-  feed: {
-    location: '',
-    contents: '',
-    pics: []
-  },
-  previewPics: []
+    feed: {
+        location: '',
+        contents: '',
+        pics: []
+    },
+    previewPics: []    
 });
 
 const handlePicChanged = e => {
@@ -75,9 +79,10 @@ const saveFeed = async () => {
                 commentList: []
             }  
         };
+
         console.log('item: ', item);
 
-        feedStore.addFeedUnshift(item)
+        feedStore.addFeedUnshift(item);
         initInputs();
         modalCloseButton.value.click(); //모달창 닫기
     }
@@ -105,10 +110,41 @@ const getCurrentTimestamp = () => {
 </script>
 
 <template>
-  <header-component />
-  <router-view />
+    <header-component />    
+    <router-view />
+    
+    <b-modal v-model="messageModalStore.state.isShow" ok-only>{{ messageModalStore.state.message }}</b-modal>
 
-  <b-modal v-model="messageModalStore.state.isShow" ok-only>{{ messageModalStore.state.message }}</b-modal>
+    <b-modal v-model="commentModalStore.state.showModal" size="lg" no-close-on-backdrop hide-footer modal-class="my-custom-modal" @close="commentModalStore.close">
+        <div class="p-3 h100p d-flex flex-column comment-container">
+            <div class="comment-list overflow-y-auto">
+                <feed-comment-card
+                    v-for="(item, idx) in commentModalStore.state.commentList"
+                    :key="item.feedCommentId"
+                    :item="item"
+                    @on-delete-comment="commentModalStore.doDeleteComment(item.feedCommentId, idx)" />
+                <div v-if="commentModalStore.state.isLoading" class="loading display-none">
+                    <img :src="loadingImg" />
+                </div>
+            </div>                
+            <div class="p-2 d-flex flex-row comment-input">
+                <input
+                    type="text"
+                    name="commentValue"
+                    class="flex-grow-1 my_input back_color"
+                    placeholder="댓글을 입력하세요..."
+                    v-model="commentModalStore.state.comment"
+                    @keyup.enter="commentModalStore.doPostComment" />
+
+                <button class="btn btn-outline-primary" @click="commentModalStore.doPostComment">
+                    등록
+                </button>
+                
+            </div>
+        </div>
+        
+    </b-modal>
+
     <div class="modal fade" id="newFeedModal" tabIndex="-1" aria-labelledby="newFeedModalLabel" aria-hidden="false">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content" id="newFeedModalContent">
@@ -135,6 +171,20 @@ const getCurrentTimestamp = () => {
 
 </template>
 
-<style scoped>
+<style>
+.comment-list { flex-grow: 1; }
+.comment-input { height: 50px; }
+.my-custom-modal .modal-dialog {
+    display: flex;         /* 화면에 고정 */    
+    justify-content: center;
+    align-items: flex-end;    
+    
+    /* 가로 너비 유지 (size="lg"에 맞게 조절 가능) */
+    width: 90%; 
+    max-width: 700px;          /* lg 사이즈 권장 최대 너비 */
+}
 
+.my-custom-modal .modal-body {    
+    height: 80vh;
+}
 </style>

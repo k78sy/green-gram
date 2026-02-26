@@ -15,18 +15,13 @@ import java.util.List;
 public class FeedCommentService {
     private final FeedCommentMapper feedCommentMapper;
 
-    public long postFeedComment( FeedCommentPostReq req ){
-        feedCommentMapper.save( req );
-
-        long feedCommentId = req.getFeedCommentId();
-        log.info("feedCommentId:{}", feedCommentId);
-
-        return feedCommentId;
+    public long postFeedComment(FeedCommentPostReq req) {
+        feedCommentMapper.save(req);
+        return req.getId();
     }
 
-    public List<FeedCommentGetRes> getFeedCommentList(FeedCommentGetReq req){
+    public List<FeedCommentGetRes> getFeedCommentList(FeedCommentGetReq req) {
         List<FeedCommentGetRes> commentList = feedCommentMapper.findAll(req);
-
         return commentList;
     }
 }

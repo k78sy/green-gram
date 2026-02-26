@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,6 +15,7 @@ public class FeedCommentGetRes {
     private long feedId;
     private String comment;
     private long writerUserId;
+    @JsonProperty("writerNickName")
     private String writerNm;
     private String writerPic;
 }

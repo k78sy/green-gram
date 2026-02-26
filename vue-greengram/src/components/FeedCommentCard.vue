@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="cmtItemCont mt-1">
+  <div class="cmtItemCont mt-3 d-flex flex-row">
     <div class="cmtItemProfile">
       <router-link :to="`/profile/${props.item.writerUserId}`">
         <profile-img
@@ -18,24 +18,24 @@ const props = defineProps({
           :size="24"
           :pic="props.item.writerPic"
           :userId="props.item.writerUserId" />
-      </router-link>
-      <template v-if="authenticationStore.state.signedUser.userId === props.item.writerUserId">
-        <font-awesome-icon icon="fa fa-trash" class="pointer" @click="$emit('onDeleteComment')"/>
-      </template>
+      </router-link>      
     </div>
     <router-link :to="`/profile/${props.item.writerUserId}`">
-      <div class="cmtItemCtnt">
+      <div class="cmtItemCtnt ms-2">
         <div class="pointer">
           {{
             props.item.writerNickName
               ? props.item.writerNickName
               : props.item.writerUid
           }}
-        </div>
-        <div>{{ props.item.comment }}</div>
+        </div>        
       </div>
     </router-link>
+    <div v-if="authenticationStore.state.signedUser.userId === props.item.writerUserId" class="ms-3">
+        <font-awesome-icon icon="fa fa-trash" class="pointer" @click="$emit('onDeleteComment')" />        
+    </div>
   </div>
+  <div>{{ props.item.comment }}</div>
 </template>
 
 <style scoped></style>

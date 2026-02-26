@@ -38,7 +38,7 @@ const init = (userId) => {
         followingCount: 0,
         followState: 0,
     };
-    state.isMyProfile = userId == authenticationStore.state.signedUser.userId;
+    state.isMyProfile = userId ===                           authenticationStore.state.signedUser.userId;
 };
 
 init(route.params.userId);
@@ -113,20 +113,22 @@ const handlePicChanged = async (e) => {
 const onClickFollow = async () => {
     switch (state.userProfile.followState) {
         case 0:
-        case 2: //post //to_user_id에 값이 들어갑니다
-            const postRes = await postUserFollow({  toUserId: state.userProfile.userId,  });
+        case 2: //post
+            const postRes = await postUserFollow({ toUserId: state.userProfile.userId });
             if (postRes.status === 200) {
                 state.userProfile.followState += 1;
                 state.userProfile.followerCount += 1;
             }
             break;
         default: //delete
-        const deleteRes = await deleteUserFollow({ to_user_id: state.userProfile.userId,  });
-        if (deleteRes.status === 200) {
-            state.userProfile.followState -= 1;
-            state.userProfile.followerCount -= 1;
-        }
-        break;
+            const deleteRes = await deleteUserFollow({
+                to_user_id: state.userProfile.userId,
+            });
+            if (deleteRes.status === 200) {
+                state.userProfile.followState -= 1;
+                state.userProfile.followerCount -= 1;
+            }
+            break;
     }
 };
 
@@ -189,17 +191,10 @@ onBeforeRouteUpdate((to, from) => {
                 :pic="state.userProfile.pic"
                 :userId="state.userProfile.userId" />
             </div>
-            <div
-            className="d-inline-flex item_container width-50"
-            v-if="state.isMyProfile && state.userProfile.pic">
-            <font-awesome-icon icon="fa fa-minus-square" class="color-red pointer" @click="removeUserPic" />
+            <div class="d-inline-flex item_container width-50" v-if="state.isMyProfile && state.userProfile.pic">
+                <font-awesome-icon icon="fa fa-minus-square" class="color-red pointer" @click="removeUserPic" />
             </div>
-            <input
-            hidden
-            type="file"
-            accept="image/*"
-            ref="fileInput"
-            @change="handlePicChanged" />
+            <input hidden type="file" accept="image/*" ref="fileInput" @change="handlePicChanged" />
         </div>
         <table>
             <thead></thead>
