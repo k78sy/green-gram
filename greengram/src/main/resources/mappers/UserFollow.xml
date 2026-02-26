@@ -11,6 +11,6 @@
         DELETE
         from user_follow
         WHERE from_user_id = #{fromUserId}
-        AND to_user_id = #{toUserId};
+        AND to_user_id = #{toUserId}
     </delete>
 </mapper>
