@@ -21,7 +21,7 @@ const state = reactive({
         contents: '',
         pics: []
     },
-    previewPics: []    
+    previewPics: []   
 });
 
 const handlePicChanged = e => {

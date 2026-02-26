@@ -1,11 +1,9 @@
 package com.green.greengram.application.feed;
 
-import com.green.greengram.application.feed.model.FeedGetReq;
-import com.green.greengram.application.feed.model.FeedGetRes;
-import com.green.greengram.application.feed.model.FeedPostReq;
-import com.green.greengram.application.feed.model.FeedPostRes;
+import com.green.greengram.application.feed.model.*;
 import com.green.greengram.application.feedcomment.model.FeedCommentGetRes;
 import com.green.greengram.configuration.util.ImgUploadManager;
+import com.green.greengram.configuration.util.MyFileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +17,7 @@ import java.util.List;
 public class FeedService {
     private final FeedMapper feedMapper;
     private final ImgUploadManager imgUploadManager;
+    private final MyFileUtil myFileUtil;
 
     public FeedPostRes postFeed(FeedPostReq req, List<MultipartFile> pics){
         feedMapper.save(req);
@@ -45,5 +44,18 @@ public class FeedService {
             
         }
         return list;
+    }
+
+    public int deleteFeed(FeedDeleteReq req){
+        // feed_pic, feed_like, feed_comment 먼저 삭제
+        feedMapper.deleteRef( req );
+
+        //feed 테이블의 row는 가장 마지막에 삭제 처리
+        feedMapper.delete( req );
+
+        // 폴더 째 삭제
+        String delDirectoryPath = String.format( "%s/feed/%d", myFileUtil.fileUploadPath, req.getFeedId() );
+        myFileUtil.deleteDirectory(delDirectoryPath);
+        return 0;
     }
 }
