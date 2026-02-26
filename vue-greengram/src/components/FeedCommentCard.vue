@@ -6,6 +6,7 @@ const authenticationStore = useAuthenticationStore();
 
 const props = defineProps({
   item: Object,
+  onDeleteComment: Function
 });
 </script>
 

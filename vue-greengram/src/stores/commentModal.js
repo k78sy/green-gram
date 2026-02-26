@@ -81,7 +81,12 @@ export const useCommentModalStore = defineStore(
         };
 
         const doDeleteComment = async (feedCommentId, idx) => {
-
+            if(!confirm('삭제하시겠습니까?')){ return; }
+            const params = { feed_comment_id: feedCommentId }
+            const res = await deleteComment(params);
+            if(res.status === 200){
+                state.commentList.splice(idx, 1);
+            }
         }
 
         return { state, close, setFeedId, doPostComment, doGetCommentList, doDeleteComment }
