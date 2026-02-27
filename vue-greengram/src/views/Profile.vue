@@ -38,7 +38,7 @@ const init = (userId) => {
         followingCount: 0,
         followState: 0,
     };
-    state.isMyProfile = userId ===                           authenticationStore.state.signedUser.userId;
+    state.isMyProfile = userId === authenticationStore.state.signedUser.userId;
 };
 
 init(route.params.userId);

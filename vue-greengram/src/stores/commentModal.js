@@ -2,6 +2,7 @@ import { reactive } from 'vue';
 import { defineStore } from 'pinia';
 import { postComment, getCommentList, deleteComment } from '@/services/feedCommentService';
 import { useAuthenticationStore } from '@/stores/authentication';
+import { useFeedStore } from '@/stores/feed'; 
 
 export const useCommentModalStore = defineStore(
     "commentModal",
@@ -60,7 +61,9 @@ export const useCommentModalStore = defineStore(
                 };
 
                 state.commentList.unshift(commentItem);
-                state.comment = '';
+                state.comment = '';                
+                const feedStore = useFeedStore();
+                feedStore.commentCountUp(state.feedId);
             }
         }
 
@@ -80,12 +83,14 @@ export const useCommentModalStore = defineStore(
             state.isLoading = false;
         };
 
-        const doDeleteComment = async (feedCommentId, idx) => {
+        const doDeleteComment = async (feedCommentId, idx, feedId) => {
             if(!confirm('삭제하시겠습니까?')){ return; }
             const params = { feed_comment_id: feedCommentId }
             const res = await deleteComment(params);
             if(res.status === 200){
                 state.commentList.splice(idx, 1);
+                const feedStore = useFeedStore();
+                feedStore.commentCountDown(feedId);
             }
         }
 

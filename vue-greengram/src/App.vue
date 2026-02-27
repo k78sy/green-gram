@@ -1,7 +1,7 @@
 <script setup>
 import HeaderComponent from './components/HeaderComponent.vue';
 import loadingImg from '@/assets/loading.gif';
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watch, nextTick } from 'vue';
 import { useMessageModalStore } from './stores/messageModal';
 import { useAuthenticationStore } from './stores/authentication';
 import { useFeedStore } from './stores/feed';
@@ -10,6 +10,7 @@ import { useCommentModalStore } from './stores/commentModal';
 import FeedCommentCard from './components/FeedCommentCard.vue';
 
 const modalCloseButton = ref(null);
+const commentListContainer = ref(null);
 const messageModalStore = useMessageModalStore();
 const authenticationStore = useAuthenticationStore();
 const feedStore = useFeedStore();
@@ -92,6 +93,7 @@ const initInputs = () => {
     state.feed.contents = '';
     state.feed.location = '';
     state.feed.pics = [];
+    state.previewPics = [];
 }
 
 const getCurrentTimestamp = () => {
@@ -107,6 +109,27 @@ const getCurrentTimestamp = () => {
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
+//메인 스크롤 방지 > 풀기 toggle
+watch(() => commentModalStore.state.showModal,(isShown) => {
+    document.body.classList.toggle('no-scroll', isShown);
+});
+
+// 댓글에서 스크롤이 내려간 상태에서 댓글을 쓰면 댓글 스크롤이 상단으로 이동
+watch(() => commentModalStore.state.commentList.length, async (newLen, oldLen) => {
+    // 댓글이 삭제된 게 아니라 추가된 경우에만 실행 (newLen > oldLen)
+    if (newLen > oldLen) {
+      // Vue가 DOM을 새 댓글을 포함해 다시 그릴 때까지 기다림
+        await nextTick(); //DOM의 변화를 vue가 인지하게 하도록 사용
+
+        if (commentListContainer.value) {
+            commentListContainer.value.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });            
+        }
+    }
+});
 </script>
 
 <template>
@@ -117,12 +140,12 @@ const getCurrentTimestamp = () => {
 
     <b-modal v-model="commentModalStore.state.showModal" size="lg" no-close-on-backdrop hide-footer modal-class="my-custom-modal" @close="commentModalStore.close">
         <div class="p-3 h100p d-flex flex-column comment-container">
-            <div class="comment-list overflow-y-auto">
+            <div ref="commentListContainer" class="comment-list overflow-y-auto">
                 <feed-comment-card
                     v-for="(item, idx) in commentModalStore.state.commentList"
                     :key="item.feedCommentId"
                     :item="item"
-                    @on-delete-comment="commentModalStore.doDeleteComment(item.feedCommentId, idx)" />
+                    @on-delete-comment="commentModalStore.doDeleteComment(item.feedCommentId, idx, item.feedId)" />
                 <div v-if="commentModalStore.state.isLoading" class="loading display-none">
                     <img :src="loadingImg" />
                 </div>

@@ -3,7 +3,7 @@ import loadingImg from '@/assets/loading.gif';
 import FeedCard from '@/components/FeedCard.vue';
 import { reactive, onMounted, onUnmounted, watch } from 'vue';
 import { useFeedStore } from '@/stores/feed';
-import { bindEvent } from '@/utils/commonUtils';
+import { bindEvent, throttle } from '@/utils/commonUtils';
 import { getFeedList, deleteFeed } from '@/services/feedService';
 
 const feedStore = useFeedStore();
@@ -17,14 +17,14 @@ const state = reactive({
     isFinish: false
 });
 
-const handleScroll = () => { bindEvent(state, window, getData) };
+const throttledScroll = throttle(() => { bindEvent(state, window, getData); }, 250);
 
 onMounted(() => {
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', throttledScroll);
 });
 
 onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll);
+    window.removeEventListener('scroll', throttledScroll);
     feedStore.init();
 });
 
