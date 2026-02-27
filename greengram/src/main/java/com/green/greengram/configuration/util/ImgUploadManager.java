@@ -2,8 +2,10 @@ package com.green.greengram.configuration.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,8 +34,8 @@ public class ImgUploadManager {
             try {
                 myFileUtil.transferTo(mf, fullFilePath);
             } catch (IOException e) {
-//                throw new RuntimeException(e);
-                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 에러가 발생했습니다.");
+//                e.printStackTrace();
             }
         }
         return picFileNames;

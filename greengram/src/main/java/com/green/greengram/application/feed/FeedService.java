@@ -6,8 +6,12 @@ import com.green.greengram.configuration.util.ImgUploadManager;
 import com.green.greengram.configuration.util.MyFileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,8 +23,9 @@ public class FeedService {
     private final ImgUploadManager imgUploadManager;
     private final MyFileUtil myFileUtil;
 
+    @Transactional
     public FeedPostRes postFeed(FeedPostReq req, List<MultipartFile> pics){
-        feedMapper.save(req);
+        int saveAffectedRows = feedMapper.save(req);
 
         //이후에 방금 insert한 feed테이블의 id값이 필요.
         long feedId = req.getFeedId();
@@ -28,8 +33,15 @@ public class FeedService {
 
         // saveFeedPics 메소드 호출.
         List<String> picSavedNames = imgUploadManager.saveFeedPics( feedId, pics );
-        feedMapper.savePics(feedId, picSavedNames);
-
+        try {
+            feedMapper.savePics(feedId, picSavedNames);
+        } catch (Exception e) {
+            //사진을 지운다.
+            String directoryPath = String.format("%s/feed/%d", myFileUtil.fileUploadPath, feedId);
+            log.info("directoryPath: {}", directoryPath);
+            myFileUtil.deleteDirectory(directoryPath);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "SQL Syntax Error 발생");
+        }
         return new FeedPostRes(feedId,picSavedNames);
     }
 
@@ -46,6 +58,7 @@ public class FeedService {
         return list;
     }
 
+    @Transactional
     public int deleteFeed(FeedDeleteReq req){
         // feed_pic, feed_like, feed_comment 먼저 삭제
         feedMapper.deleteRef( req );
