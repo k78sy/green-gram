@@ -38,20 +38,20 @@ public class JwtTokenManager { //인증 처리 총괄
     //AT를 쿠키에 담는다.
     public void setAccessTokenInCookie(HttpServletResponse res, String accessToken) {
         myCookieUtil.setCookie(res
-                            , constJwt.getAccessTokenCookieName()
-                            , accessToken
-                            , constJwt.getAccessTokenCookieValiditySeconds()
-                            , constJwt.getAccessTokenCookiePath()
+                , constJwt.getAccessTokenCookieName()
+                , accessToken
+                , constJwt.getAccessTokenCookieValiditySeconds()
+                , constJwt.getAccessTokenCookiePath()
         );
     }
 
     //RT를 쿠키에 담는다.
     public void setRefreshTokenInCookie(HttpServletResponse res, String refreshToken) {
         myCookieUtil.setCookie(res
-                             , constJwt.getRefreshTokenCookieName()
-                             , refreshToken
-                             , constJwt.getRefreshTokenCookieValiditySeconds()
-                             , constJwt.getRefreshTokenCookiePath()
+                , constJwt.getRefreshTokenCookieName()
+                , refreshToken
+                , constJwt.getRefreshTokenCookieValiditySeconds()
+                , constJwt.getRefreshTokenCookiePath()
         );
     }
 
@@ -59,6 +59,13 @@ public class JwtTokenManager { //인증 처리 총괄
     public String getAccessTokenFromCookie(HttpServletRequest req) {
         return myCookieUtil.getValue(req, constJwt.getAccessTokenCookieName());
     }
+
+    //RT를 쿠키에서 꺼낸다.
+    public String getRefreshTokenFromCookie(HttpServletRequest req) {
+        return myCookieUtil.getValue(req, constJwt.getRefreshTokenCookieName());
+    }
+
+
 
     //시큐리티에서 로그인 인정을 할 때 이 객체를 Security Context Holder(공간)에 담으면
     //시큐리티는 인증이 되었다고 처리한다.
@@ -85,5 +92,16 @@ public class JwtTokenManager { //인증 처리 총괄
     public void signOut(HttpServletResponse res) {
         deleteAccessTokenInCookie(res);
         deleteRefreshTokenInCookie(res);
+    }
+
+    public void reissue(HttpServletRequest req, HttpServletResponse res) {
+        //req에서 RT을 얻어야 한다.
+        String refreshToken = getRefreshTokenFromCookie(req);
+
+        //RT를 이용하여 JwtUser 객체를 만든다.
+        JwtUser jwtUser = jwtTokenProvider.getJwtUserFromToken(refreshToken);
+
+        //JwtUser를 이용하여 AT를 만들어 cookie에 담아주세요.
+        setAccessTokenInCookie(res, jwtUser);
     }
 }

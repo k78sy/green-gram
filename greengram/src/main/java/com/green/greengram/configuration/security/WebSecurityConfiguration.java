@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfiguration {
 
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean //메소드 호출로 리턴값 객체를 빈등록하게 된다.
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -27,9 +28,13 @@ public class WebSecurityConfiguration {
                 //인가처리 (권한처리)
 
                 //아래 내용은 (POST) /api/board 로 요청이 올 때는 반드시 로그인이 되어있어야 한다.
-                .authorizeHttpRequests( req -> req.requestMatchers(HttpMethod.POST, "/api/board").authenticated()
-                                                  .anyRequest().permitAll() //나머지 요청에 대해서는 허용하겠다.
+                .authorizeHttpRequests( req -> req.requestMatchers("/api/feed"
+                                , "/api/feed/comment"
+                                , "/api/feed/like"
+                                , "/api/user/profile/pic").authenticated()
+                        .anyRequest().permitAll() //나머지 요청에 대해서는 허용하겠다.
                 )
+                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
