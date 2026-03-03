@@ -29,8 +29,8 @@ axios.interceptors.response.use(
         // 중단된 요청을(에러난 요청)을 토큰 갱신 후 재요청
         return await axios.request(err.config);
       } else {
-        const message = err.response.data?.message
-          ? err.response.data?.message
+        const message = err.response.data?.resultMessage
+          ? err.response.data?.resultMessage
           : err.response.data;
 
         const messageModalStore = useMessageModalStore();

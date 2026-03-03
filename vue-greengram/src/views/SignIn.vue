@@ -1,11 +1,11 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive } from 'vue'; //반응형 상태 (화면에 변화)
 import { useRouter } from 'vue-router';
 import { signIn } from '@/services/userService';
-import { useAuthenticationStore } from '@/stores/authentication';
+import { useAuthenticationStore } from '@/stores/authentication'; // pinia로 상태관리 => 데이터 저장+ 화면 반응까지 하기 위해 사용
 import { checkValidation } from '@/utils/validation';
 
-const router = useRouter();
+const router = useRouter(); 
 
 const authentication = useAuthenticationStore();
 
