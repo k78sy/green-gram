@@ -1,9 +1,8 @@
 <script setup>
 import loadingImg from '@/assets/loading.gif';
 import FeedCard from '@/components/FeedCard.vue';
-import { reactive, onMounted, onUnmounted, watch } from 'vue';
+import { reactive, watch } from 'vue';
 import { useFeedStore } from '@/stores/feed';
-import { bindEvent, throttle } from '@/utils/commonUtils';
 import { getFeedList, deleteFeed } from '@/services/feedService';
 import { useInfiniteScroll } from '@/composables/useInfiniteScroll';
 
@@ -23,6 +22,9 @@ const state = reactive({
     isLoading: false,
     isFinish: false
 });
+
+
+
 
 // const throttledScroll = throttle(() => { bindEvent(state, window, getData); }, 250);
 
@@ -51,13 +53,14 @@ const getData = async () => {
 
     try {
         const res = await getFeedList(params);
+        console.log(res);
         if (res.status === 200) {
             feedStore.setPage(feedStore.page + 1);
             const result = res.data.resultData;
-            if (result && result.length > 0) {
+            if (result && result.length > 0) { // 내가 보낸 size값보다 크면 = 데이터가 더 있을 수도 있음 = 확인
                 feedStore.addFeedList(result);
             }
-            if (result.length < feedStore.rowPerPage) {
+            if (result.length < feedStore.rowPerPage) { // 더이상 추가 값이 없다면 추가 데이터 없다. 끝!
                 state.isFinish = true
             }
         }

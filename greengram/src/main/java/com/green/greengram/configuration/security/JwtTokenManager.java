@@ -21,8 +21,8 @@ public class JwtTokenManager { //인증 처리 총괄
     private final JwtTokenProvider jwtTokenProvider;
 
     public void issue(HttpServletResponse res, JwtUser jwtUser) {
-        setAccessTokenInCookie(res, jwtUser);
-        setRefreshTokenInCookie(res, jwtUser);
+        setAccessTokenInCookie(res, jwtUser); // AT 담기
+        setRefreshTokenInCookie(res, jwtUser); // RT담기
     }
 
     public void setAccessTokenInCookie(HttpServletResponse res, JwtUser jwtUser) {

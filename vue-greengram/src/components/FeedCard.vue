@@ -46,6 +46,7 @@ const state = reactive({
 const toggleLike = async () => {
   const data = { feedId: props.item.feedId };
   const res = await toggleFeedLike(data);
+
   if (res.status === 200) {
     state.isLike = res.data.resultData;
     state.likeCount = state.isLike ? state.likeCount + 1 : state.likeCount - 1;
@@ -62,7 +63,7 @@ const showCommentModel = () => {
     <div class="d-flex flex-row ps-3 pe-3">
       <div class="d-flex flex-column justify-content-center">
         <router-link :to="`/profile/${props.item.writerUserId}`">
-          <profile-img
+          <ProfileImg
             :userId="props.item.writerUserId"
             :pic="props.item.writerPic"
             :size="30"

@@ -26,7 +26,7 @@ const pic = computed( () => props.pic
 
 const handleImgError = e => {
     e.target.src = defaultProfileImg;
-    e.target.onError = null;
+    e.target.onError = null; // 무한 루트 방지용 에러이벤트 제거
 }
 
 </script>

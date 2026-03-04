@@ -38,10 +38,11 @@ const init = (userId) => {
         followingCount: 0,
         followState: 0,
     };
-    state.isMyProfile = userId === authenticationStore.state.signedUser.userId;
+    state.isMyProfile = userId === authenticationStore.state.signedUser.userId; 
+    // pathvariable로 받은 userId가 로그인 유저와 (타입까지) 동일한지 확인 ==> 동일하다면 True
 };
 
-init(route.params.userId);
+init(route.params.userId); // PathVariable은 항상 무조건 "문자열"
 console.log('route.params.userId:', route.params.userId);
 
 /*

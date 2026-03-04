@@ -62,13 +62,13 @@ export const useFeedStore = defineStore("feed", () => {
   const reLoading = computed(() => state.reLoading);
 
   return {
-    feedList,
+    feedList, // 이 색깔은 속성
     page,
     rowPerPage,
     profileUserId,
     keyword,
     reLoading,
-    setPage,
+    setPage, // 이 색깔은 메소드
     setProfileUserId,
     setKeyword,
     setReLoading,

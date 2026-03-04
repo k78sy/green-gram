@@ -31,6 +31,9 @@ export function useInfiniteScroll(target, callback, options = {}) {
         }
     };
 
+
+// throttled 이벤트를 조금 띄엄띄엄쓰게 하는거
+
     const throttledScroll = throttle(checkScroll, delay);
 
     // 이벤트 리스너 등록 함수
