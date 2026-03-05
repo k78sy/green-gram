@@ -159,7 +159,7 @@ watch(() => commentModalStore.state.commentList, async (newList) => {
         modal-class="my-custom-modal" @close="commentModalStore.close">
         <div class="p-3 h100p d-flex flex-column comment-container">
             <div ref="commentListContainer" class="comment-list overflow-y-auto">
-                <feed-comment-card v-for="(item, idx) in commentModalStore.state.commentList" :key="item.feedCommentId"
+                <feed-comment-card v-for="item in commentModalStore.state.commentList" :key="item.feedCommentId"
                     :item="item" />
                 <div v-if="commentModalStore.state.isLoading" class="loading display-none">
                     <img :src="loadingImg" />

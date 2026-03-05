@@ -2,6 +2,7 @@
 import ProfileImg from './ProfileImg.vue';
 import { useAuthenticationStore } from '@/stores/authentication';
 import { useCommentModalStore } from '@/stores/commentModal';
+import { getDateTimeInfo } from '@/utils/feedUtils';
 
 const authenticationStore = useAuthenticationStore();
 const commentModalStore = useCommentModalStore();
@@ -41,6 +42,7 @@ const props = defineProps({
         <font-awesome-icon icon="fa fa-trash" class="pointer" @click="commentModalStore.doDeleteComment(props.item)" />
       </div>
       <div>{{ props.item.comment }}</div>
+      <div style="margin-left:10px">{{ getDateTimeInfo(props.item.createdAt)}}</div>
     </div>
   </div>
 </template>

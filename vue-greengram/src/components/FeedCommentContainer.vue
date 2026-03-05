@@ -50,6 +50,7 @@ const onPostComment = async () => {
       writerPic: authenticationStore.state.signedUser.pic,
       comment: state.comment,
       isSelf: true,
+      createdAt: state.createdAt,
     };
 
     state.commentList.push(commentItem);

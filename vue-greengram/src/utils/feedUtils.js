@@ -1,4 +1,7 @@
 export const getDateTimeInfo = dt => {
+    // dt가 없거나 유효하지 않을 경우 처리
+    if (!dt) return '방금 전';
+    
     const nowDt = new Date();
     const targetDt = new Date(dt);
 

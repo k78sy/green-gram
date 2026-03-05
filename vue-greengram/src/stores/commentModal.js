@@ -43,7 +43,7 @@ export const useCommentModalStore = defineStore("commentModal", () => {
     const messageModalStore = useMessageModalStore();
 
     if (state.comment.trim().length === 0) {
-      // alert("댓글 내용을 작성해 주세요."); // TODO: messageModal로 alret 띄우기 한번 해보도록... 
+      // alert("댓글 내용을 작성해 주세요."); 
       messageModalStore.setMessage("댓글 내용을 작성해 주세요.")
       return;
     }
@@ -58,11 +58,13 @@ export const useCommentModalStore = defineStore("commentModal", () => {
       const result = res.data.resultData;
 
       const commentItem = {
+        feedId:state.feedId,
         feedCommentId: result,
         writerUserId: authenticationStore.state.signedUser.userId,
         writerNickName: authenticationStore.state.signedUser.nickName,
         writerPic: authenticationStore.state.signedUser.pic,
         comment: state.comment,
+        createdAt: state.createdAt,
         isSelf: true,
       };
 
@@ -86,6 +88,7 @@ export const useCommentModalStore = defineStore("commentModal", () => {
       size: state.size,
     };
     const res = await getCommentList(params);
+    console.log("commentList: ", res.data.resultData);
     if (res.status === 200) {
       state.commentList.push(...res.data.resultData);
       state.isFinish = res.data.resultData.length < state.size;
@@ -101,7 +104,7 @@ export const useCommentModalStore = defineStore("commentModal", () => {
     const res = await deleteComment(params);
     if (res.status === 200) {
       const idx = state.commentList.indexOf(item);
-      state.commentList.splice(idx, 1); //배열에서 아이템 삭제하는 방법
+      state.commentList.splice(idx, 1); //splice 배열에서 아이템 삭제하는 방법
 
       const feedStore = useFeedStore();
       feedStore.commentCountDown(item.feedId);
