@@ -2,7 +2,7 @@
 import ProfileImg from './ProfileImg.vue';
 import { useAuthenticationStore } from '@/stores/authentication';
 import { useCommentModalStore } from '@/stores/commentModal';
-import { getDateTimeInfo } from '@/utils/feedUtils';
+import { getDateTimeInfo } from '@/utils/commonUtils';
 
 const authenticationStore = useAuthenticationStore();
 const commentModalStore = useCommentModalStore();

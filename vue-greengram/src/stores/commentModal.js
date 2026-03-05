@@ -10,6 +10,8 @@ import { useFeedStore } from "@/stores/feed";
 
 import { useMessageModalStore } from '@/stores/messageModal';
 
+import { getCurrentTimestamp } from "@/utils/commonUtils";
+
 export const useCommentModalStore = defineStore("commentModal", () => {
   const state = reactive({
     showModal: false,
@@ -64,7 +66,7 @@ export const useCommentModalStore = defineStore("commentModal", () => {
         writerNickName: authenticationStore.state.signedUser.nickName,
         writerPic: authenticationStore.state.signedUser.pic,
         comment: state.comment,
-        createdAt: state.createdAt,
+        createdAt: getCurrentTimestamp,
         isSelf: true,
       };
 
