@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthenticationStore } from '@/stores/authentication';
+import { useCommentModalStore } from '@/stores/commentModal';
 import Feed from '../views/Feed.vue'
 import SignUp from '@/views/SignUp.vue'
 import SignIn from '@/views/SignIn.vue'
@@ -39,10 +40,16 @@ const router = createRouter({
   ],
 });
 
+// 네비게이션 가드 (주소의 변화가 있으면 호출)
 router.beforeEach( (to, from, next) => {
   const authentication = useAuthenticationStore();
+  const commentModalStore = useCommentModalStore();
   const isSigned = authentication.state.isSigned; //true: 로그인 상태, false: 비로그인 상태
   
+  if( commentModalStore.state.showModal ){ // 댓글 모달창이 켜져 있다면
+    commentModalStore.close(); //닫는다
+  }
+
   //비로그인 상태에서 로그인이 필요한 path로 가려고 할 때 
   if( to.meta.requiresAuth && !isSigned ) {
     return next('/sign-in');
