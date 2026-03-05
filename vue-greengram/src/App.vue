@@ -152,15 +152,15 @@ watch(() => commentModalStore.state.commentList, async (newList) => {
     <header-component />
     <router-view />
 
-    <b-modal v-model="messageModalStore.state.isShow" ok-only>{{ messageModalStore.state.message }}</b-modal>
+    <!-- b-modal : 부트스트랩 제공 -->
 
+    <!-- 댓글 모달창 -->
     <b-modal v-model="commentModalStore.state.showModal" size="lg" no-close-on-backdrop hide-footer
         modal-class="my-custom-modal" @close="commentModalStore.close">
         <div class="p-3 h100p d-flex flex-column comment-container">
             <div ref="commentListContainer" class="comment-list overflow-y-auto">
                 <feed-comment-card v-for="(item, idx) in commentModalStore.state.commentList" :key="item.feedCommentId"
-                    :item="item"
-                    @on-delete-comment="commentModalStore.doDeleteComment(item.feedCommentId, idx, item.feedId)" />
+                    :item="item" />
                 <div v-if="commentModalStore.state.isLoading" class="loading display-none">
                     <img :src="loadingImg" />
                 </div>
@@ -178,6 +178,9 @@ watch(() => commentModalStore.state.commentList, async (newList) => {
         </div>
 
     </b-modal>
+
+    <!-- 오류 알럿창 -->
+    <b-modal v-model="messageModalStore.state.isShow" ok-only>{{ messageModalStore.state.message }}</b-modal>
 
     <div class="modal fade" id="newFeedModal" tabIndex="-1" aria-labelledby="newFeedModalLabel" aria-hidden="false">
         <div class="modal-dialog modal-dialog-centered modal-xl">

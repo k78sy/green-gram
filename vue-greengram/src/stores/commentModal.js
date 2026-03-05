@@ -8,6 +8,8 @@ import {
 import { useAuthenticationStore } from "@/stores/authentication";
 import { useFeedStore } from "@/stores/feed";
 
+import { useMessageModalStore } from '@/stores/messageModal';
+
 export const useCommentModalStore = defineStore("commentModal", () => {
   const state = reactive({
     showModal: false,
@@ -38,9 +40,11 @@ export const useCommentModalStore = defineStore("commentModal", () => {
 
   const doPostComment = async () => {
     const authenticationStore = useAuthenticationStore();
+    const messageModalStore = useMessageModalStore();
 
     if (state.comment.trim().length === 0) {
-      alert("댓글 내용을 작성해 주세요.");
+      // alert("댓글 내용을 작성해 주세요."); // TODO: messageModal로 alret 띄우기 한번 해보도록... 
+      messageModalStore.setMessage("댓글 내용을 작성해 주세요.")
       return;
     }
 
@@ -50,7 +54,7 @@ export const useCommentModalStore = defineStore("commentModal", () => {
     };
 
     const res = await postComment(data);
-    if (res.status === 200) {
+    if (res.status === 200) { // 방금 새롭게 작성한 덧글에 관하여
       const result = res.data.resultData;
 
       const commentItem = {
@@ -62,8 +66,10 @@ export const useCommentModalStore = defineStore("commentModal", () => {
         isSelf: true,
       };
 
-      state.commentList.unshift(commentItem);
+      state.commentList.unshift(commentItem); // unshift: 방금 만든 객체를 commentList 배열의 [0]번방에 item 추가
       state.comment = "";
+
+      // 피드 댓글 수 수정
       const feedStore = useFeedStore();
       feedStore.commentCountUp(state.feedId);
     }
@@ -87,13 +93,14 @@ export const useCommentModalStore = defineStore("commentModal", () => {
     state.isLoading = false;
   };
 
-  const doDeleteComment = async (feedCommentId, idx, feedId) => {
+  const doDeleteComment = async (item) => {
     if (!confirm("삭제하시겠습니까?")) {
       return;
     }
     const params = { feed_comment_id: feedCommentId };
     const res = await deleteComment(params);
     if (res.status === 200) {
+      const idx = state.commentList.indexOf(item);
       state.commentList.splice(idx, 1);
       const feedStore = useFeedStore();
       feedStore.commentCountDown(feedId);
